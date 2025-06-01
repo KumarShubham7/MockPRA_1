@@ -1,0 +1,155 @@
+
+import java.util.*;
+class Courses {
+    String courseName;
+    int cost;
+    
+    public Courses(String courseName, int cost) {
+        this.courseName = courseName;
+        this.cost = cost;
+    }
+}
+
+class Student {
+    int studentId;
+    String studentName;
+    int noOfCourses;
+    ArrayList<Courses> courses;
+    
+    public Student(int studentId, String studentName, int noOfCourses, ArrayList<Courses> courses){
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.noOfCourses = noOfCourses;
+        this.courses = courses;
+    }
+}
+
+
+class Service {
+    public void findHighestCostCourse(ArrayList<Student> students) {
+        HashMap<String, Integer> map = new HashMap<>();
+        
+        boolean hasNegative = false;
+        
+        for(int i=0 ;i<students.size(); i++) {
+            Student s = students.get(i);
+            
+            for(int j=0; j<s.courses.size(); j++) {
+                Courses c = s.courses.get(j);
+                
+                if(c.cost < 0) {
+                    System.out.println("Alert:Negative Cost. Cannot find course with highest cost.");
+                    hasNegative = true;
+                    break;
+                }
+                
+                String key = c.courseName.toLowerCase();
+                
+                    if(!map.containsKey(key) || map.get(key) < c.cost) {
+                        map.put(key,c.cost);
+                    }
+                    
+                }
+                if(hasNegative) break;
+            }
+            
+            if(!hasNegative) {
+                int max = -1;
+                for(String course : map.keySet()) {
+                    int cost = map.get(course);
+                    if(cost > max) {
+                        max = cost;
+                    }
+                }
+                
+                ArrayList<String> result = new ArrayList<>();
+                for(String course : map.keySet()) {
+                    if(map.get(course) == max) {
+                        result.add(course.toUpperCase());
+                    }
+                }
+       
+                
+                Collections.sort(result, Collections.reverseOrder());
+                for(int i=0; i<result.size(); i++) {
+                    System.out.println(result.get(i));
+                }
+            }
+        }
+        
+        public void findStudentWithLeastPayment(ArrayList<Student> students) {
+            int min = Integer.MAX_VALUE;
+            String result = "";
+            boolean hasNegative = false;
+            
+            for(int i=0; i<students.size(); i++) {
+                Student s = students.get(i);
+                int total = 0;
+                
+                for(int j=0; j<s.courses.size(); j++) {
+                    Courses c = s.courses.get(j);
+                    if(c.cost < 0) {
+                        System.out.println("Negative cost");
+                        hasNegative = true;
+                        break;
+                    }
+                    
+                    total += c.cost;
+                }
+                
+                if(hasNegative) break;
+                
+                if(total < min) {
+                    min = total;
+                    result = s.studentName;
+                }
+            }
+            
+            if(!hasNegative) {
+                System.out.println(result);
+            }
+        }
+        
+    }
+
+
+public class Main
+{
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		
+		ArrayList<Student> students = new ArrayList<>();
+		
+		int n = sc.nextInt();
+		
+		for(int i=0; i<n; i++) {
+		    int id = sc.nextInt();
+		    sc.nextLine();
+		    
+		    String name = sc.nextLine();
+		    int count = sc.nextInt();
+		    sc.nextLine();
+		    
+		    ArrayList<Courses> courses = new ArrayList<>();
+		    
+		    for(int j=0; j<count; j++) {
+		        String cname = sc.nextLine();
+		        int cost = sc.nextInt();
+		        sc.nextLine();
+		        
+		        courses.add(new Courses(cname, cost));
+		    }
+		    
+		    students.add(new Student(id,name,count,courses));
+		    
+		    
+		}
+		
+		
+		Service s = new Service();
+		s.findHighestCostCourse(students);
+		s.findStudentWithLeastPayment(students);
+	}
+	
+	
+}
